@@ -28,6 +28,7 @@ kbd{display:inline-block;min-width:34px;text-align:center;padding:3px 10px;borde
 .tile::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,#ffffff2e 48%,transparent 66%);transform:translateX(-130%)}
 .card.on .tile::after{animation:sh 2.6s 0.4s infinite}@keyframes sh{to{transform:translateX(130%)}}
 .tile em{position:absolute;font-style:normal;font-size:130px;font-weight:700;opacity:.14;right:18px;bottom:-26px}
+.tile .ico{font-size:76px;z-index:1;filter:drop-shadow(0 6px 18px #0009)}
 .tile img{width:76px;height:76px;border-radius:18px;background:#fff;padding:8px;box-shadow:0 8px 30px #0007;z-index:1}
 .tile.add{background:#ffffff12;border:2px dashed #fff5}.tile.add svg{font-size:56px;opacity:.8}
 .badge{position:absolute;top:14px;left:14px;font-size:13px;letter-spacing:2px;padding:5px 12px;border-radius:99px;background:#000a;z-index:2;animation:pl 1.6s infinite}@keyframes pl{50%{opacity:.5}}
@@ -94,13 +95,13 @@ const THEMES = [['Aurora', ''], ['Sunset', 'radial-gradient(60% 55% at 20% 85%,#
 const SC = [['Esc', 'Back'], ['Hold Esc', 'Exit app → home screen'], ['Home', 'Home (app keeps running)'], ['Hold Home', 'Exit app → home screen'], ['+', 'Volume up'], ['−', 'Volume down'], ['*', 'Mute / unmute'], ['/', 'Power off / on'],
   ['=', 'Open settings'], [']', 'Lock / unlock'], ['Page Up', 'Play'], ['Page Down', 'Pause'], ['End', 'Stop'], ['<', 'Rewind 10 s'], ['>', 'Forward 10 s'], ['\\', 'Voice input (PC mic)']];
 const TABS = ['Apps', 'Wallpaper', 'Phone remote', 'Shortcuts', 'System'];
-let apps = [], run = null, row = 1, c0 = 0, c1 = 0, mode = 'home', locked = true, s = -1, tab = 0, phones = 0, idle = 0, lockSecs = 0, inApp = false, login = false, theme = 0, hasWall = false, pair = { urls: [], pin: '', qr: '' }, off = false;
+let apps = [], run = null, row = 1, c0 = 0, c1 = 0, mode = 'home', locked = true, s = -1, tab = 0, phones = 0, idle = 0, lockSecs = 0, inApp = false, login = false, ytShadow = true, theme = 0, hasWall = false, pair = { urls: [], pin: '', qr: '' }, off = false;
 let draft = { name: '', url: '', thumb: '', wall: '' };
 const host = u => { try { return new URL(u).hostname; } catch { return ''; } };
 const hue = n => [...n].reduce((a, c) => a + c.charCodeAt(0) * 7, 0) % 360;
 const col = a => a.color || `hsl(${hue(a.name)} 55% 30%)`;
 const list = () => [...(run ? [{ resume: 1, name: run.name, url: '' }] : []), ...apps];
-const fav = a => `<img src="https://www.google.com/s2/favicons?domain=${host(a.url)}&sz=128" onerror="this.remove()">`;
+const fav = a => a.icon ? `<span class="ico">${a.icon}</span>` : `<img src="https://www.google.com/s2/favicons?domain=${host(a.url)}&sz=128" onerror="this.remove()">`;
 
 function render() {
   $('#acts').innerHTML = [['search', 'Search'], ['gear', 'Settings'], ['lock', 'Lock']].map(([n, l]) => `<div class="act">${ic(n)}<span>${l}</span></div>`).join('');
@@ -127,7 +128,7 @@ const items = () => {
     { h: 'Photos' }, { l: '🎲  Random photo', f: () => ipc.send('randwall') }, { l: '📁  Choose image from this PC…', f: () => ipc.send('pickwall') }, { in: 'wall', p: 'Image URL' }, { h: 'Tip' }, { html: '<p class="note">You can also upload a wallpaper from your phone: Remote → Apps tab → Upload.</p>' }];
   if (T === 'Phone remote') return [{ html: pairHtml() }, { l: '🛡  Fix phone connection (firewall)', f: () => ipc.send('fixfw') }];
   if (T === 'Shortcuts') return [...SC.map(([k, d]) => ({ k, d })), { html: '<p class="note">Symbol keys (+ − * / = ] &lt; &gt; \\) are ignored while you are typing in a text box. Esc and Home always work.</p>' }];
-  return [{ l: 'Start with Windows:  ' + (login ? 'On' : 'Off'), f: () => ipc.send('login', !login) }, { l: 'Open extensions folder', f: () => ipc.send('extdir') }, { l: '📄  Open log folder (for support)', f: () => ipc.send('openlog') }, { l: '⏻  Power off', f: () => ipc.send('poweroff') }, { html: '<p class="note">OrcaCast TV v1.2</p>' }];
+  return [{ l: 'Start with Windows:  ' + (login ? 'On' : 'Off'), f: () => ipc.send('login', !login) }, { l: 'YouTube text shadow fix:  ' + (ytShadow ? 'On' : 'Off') + '   (reopen YouTube to apply)', f: () => ipc.send('ytshadow', !ytShadow) }, { l: 'Open extensions folder', f: () => ipc.send('extdir') }, { l: '📄  Open log folder (for support)', f: () => ipc.send('openlog') }, { l: '⏻  Power off', f: () => ipc.send('poweroff') }, { html: '<p class="note">OrcaCast TV v1.2</p>' }];
 };
 const foc = () => items().filter(x => x.l || x.in);
 function drawSet() {
@@ -186,7 +187,7 @@ addEventListener('keydown', e => {
 });
 addEventListener('focusin', e => ipc.send('editing', e.target.tagName === 'INPUT')); addEventListener('focusout', () => ipc.send('editing', false));
 ipc.on('cfg', (e, c) => {
-  apps = c.apps; login = c.login; theme = c.theme; hasWall = !!c.wall;
+  apps = c.apps; login = c.login; ytShadow = c.ytShadow !== false; theme = c.theme; hasWall = !!c.wall;
   const w = $('#wall'); w.style.cssText = '';
   if (c.wall) w.style.backgroundImage = `url("${c.wall}")`; else if (THEMES[theme][1]) w.style.background = THEMES[theme][1];
   render(); if (mode === 'set' && !(document.activeElement && document.activeElement.tagName === 'INPUT')) drawSet();
