@@ -1,30 +1,23 @@
-<img width="1097" height="119" alt="image" src="https://github.com/user-attachments/assets/27be1767-253d-45e3-bee9-7dbf5bbc76aa" />
+# OrcaCast TV
 
-
-> A living-room-friendly web launcher for Windows, with a phone remote, TV-style navigation, and voice input 🦭
+> A living-room-friendly web launcher for Windows, with a phone remote, TV-style navigation, and voice input.
 
 [![Release](https://img.shields.io/badge/release-source-4f8cff)](../../releases)
 [![License](https://img.shields.io/badge/license-MIT-5ee0a0)](LICENSE)
 [![Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#requirements)
 
-<img width="1657" height="714" alt="home" src="https://github.com/user-attachments/assets/25ffe780-8081-44b5-a245-662e23f8acbd" />
+OrcaCast TV turns a Windows PC connected to a TV into a simple, remote-controlled
+entertainment hub. Launch web apps from a 10-foot interface, control them with a
+keyboard or phone, and keep the PC hidden behind a TV-friendly home screen.
 
-
-***
-
-
-
-Ever owned a extra monitor or a LED TV which you want to set up as a TV in your room? Ever ordered a TV or a 4k projector and realised it doesnt come with any software? Then OrcaCast is just for you. OrcaCast TV is open source TV Software simulations whic turns a Windows PC connected to a TV into a simple, remote-controlled entertainment hub. Launch web apps from a 10-foot interface, control them with a keyboard or phone, and keep the PC hidden behind a TV-friendly home screen.
-
-> **Status:** OrcaCast TV is currently distributed as a open-source Windows desktop application.
-> The project is under active development and has many bugs and certain features do not work and the interface may change between releases.
+> **Status:** OrcaCast TV is currently distributed as a Windows desktop application.
+> The project is under active development and the interface may change between releases.
 
 ## Contents
 
 - [Features](#features)
 - [Requirements](#requirements)
-- [Install a release](#install-a-prebuilt-release)
-- [Install a nightly release](#install-a-nightly-build)
+- [Install a release](#install-a-release)
 - [Build from source](#build-from-source)
 - [First launch](#first-launch)
 - [Phone remote](#phone-remote)
@@ -63,30 +56,14 @@ Ever owned a extra monitor or a LED TV which you want to set up as a TV in your 
 OrcaCast TV opens websites inside Electron. Availability, sign-in requirements,
 playback quality, and supported controls are determined by each service.
 
-## Install a prebuilt release
+## Install a release
 
 1. Download the latest installer from
    [GitHub Releases](../../releases).
-3. Run `OrcaCast TV Setup <version>.exe`.
-4. Select to location to install (Recommended `C://Program Files/`)
-5. Allow the installer to add the OrcaCast TV Windows Firewall rules when prompted.
+2. Run `OrcaCast TV Setup <version>.exe`.
+3. Allow the installer to add the OrcaCast TV Windows Firewall rules when prompted.
    These rules allow the phone remote to reach the PC on the local network.
-6. Start OrcaCast TV using the shortcut on the desktop and connect the PC to the TV or Projector with HDMI.
-
-## Install a nightly build
-
-1. Download the latest source code from this repository [GitHub Releases](https://github.com/soorzj/OrcaCast-TV/archive/refs/heads/main.zip).
-   Click on the green `Code<>` Button in the repository and click `Download ZIP` option in the bottom
-   
-3. Navigate to the downloaded `.zip` and extract it using a extractor like WinRAR or 7Z
-4. Navigate to the extracted files and open the install.bat, click run if safety net is triggered.
-5. Let the Node js make the installer
-6. After Node js finishes, open a `dist` folder have been created. Open it and run `OrcaCast TV Setup 1.2.0.exe`.
-7. If SmartScreen is triggered, click on `More Options` and click on `Run Anyway`
-8. Allow the installer to install OrcaCast TV add the OrcaCast TV Windows Firewall rules when prompted.
-   These rules allow the phone remote to reach the PC on the local network.
-9. Start OrcaCast TV and connect the PC to the TV with HDMI.
-
+4. Start OrcaCast TV and connect the PC to the TV with HDMI.
 
 The portable build can be used without installing the application, but the
 installer is recommended because it configures the firewall automatically.
@@ -125,18 +102,6 @@ OrcaCast TV.exe --windowed
 4. Scan the QR code with a phone on the same Wi-Fi network.
 5. If the phone cannot connect, choose **Fix phone connection (firewall)** in the
    same settings panel and approve the Windows elevation prompt.
-
-## Adding Apps
-<img width="425" height="307" alt="image" src="https://github.com/user-attachments/assets/22908107-948e-4893-aae5-a1e20ed1c640" />
-
-## Changing Wallpapers
-<img width="425" height="307" alt="image" src="https://github.com/user-attachments/assets/d334408e-2be5-4838-88d3-3e098cca5524" />
-
-## Connecting the phone remote
-<img width="425" height="307" alt="image" src="https://github.com/user-attachments/assets/670a5ed1-638b-404c-a27e-8213e433b63e" />
-
-
-
 
 ## Phone remote
 
@@ -228,9 +193,6 @@ own controls, and media inside an iframe may not receive the keys.
 Open the log folder from **Settings > System > Open log folder**, then attach
 relevant log details when [opening an issue](../../issues).
 Never include cookies, authentication tokens, or private network details.
-
-### The Remote Doesnt Work
-I'm working on a fix, it doesnt seem to work equally on all devices
 
 ## Development
 

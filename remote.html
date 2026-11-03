@@ -1,0 +1,101 @@
+<!doctype html><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#0a0e1a"><title>OrcaCast Remote</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:radial-gradient(90% 50% at 50% 0,#27337a66,transparent),#0a0e1a;color:#fff;font:16px system-ui,sans-serif;-webkit-user-select:none;user-select:none;touch-action:manipulation;padding-bottom:84px}
+#st{text-align:center;font-size:13px;padding:16px;color:#8a97b8}#st.ok{color:#5ee0a0}
+section{display:none;padding:6px 20px}section.on{display:block}
+button{font:inherit;color:#fff;border:0;background:#ffffff14;border-radius:18px;height:56px;transition:transform .1s,background .15s}
+button:active{transform:scale(.93);background:#4f8cff}
+.ring{position:relative;width:290px;height:290px;margin:14px auto 22px;border-radius:50%;background:#ffffff0d;border:1px solid #ffffff1a;box-shadow:inset 0 0 60px #0006}
+.ring button{position:absolute;width:84px;height:84px;border-radius:50%;background:none;font-size:26px;color:#c9d4f5}
+.ring .u{top:6px;left:103px}.ring .d{bottom:6px;left:103px}.ring .l{left:6px;top:103px}.ring .r{right:6px;top:103px}
+.ring .ok{left:100px;top:100px;width:90px;height:90px;background:linear-gradient(135deg,#4f8cff,#7c5cff);font-weight:600;font-size:20px;box-shadow:0 8px 30px #4f8cff66}
+.row{display:flex;gap:12px;margin:12px 0}.row button{flex:1}
+input,textarea{width:100%;padding:15px;margin:6px 0;border-radius:14px;border:1px solid #ffffff1a;background:#ffffff10;color:#fff;font:inherit;-webkit-user-select:text;user-select:text;outline:0}
+#tp{height:300px;background:#ffffff0d;border:1px solid #ffffff18;border-radius:26px;display:grid;place-items:center;color:#6b7aa0;touch-action:none;text-align:center}
+h4{margin:22px 0 4px;color:#8a97b8;font-weight:500;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+#tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0d1224ee;backdrop-filter:blur(20px);border-top:1px solid #ffffff14;padding-bottom:env(safe-area-inset-bottom)}
+#tabs button{flex:1;height:64px;border-radius:0;background:none;font-size:12px;color:#7d8aad}#tabs b{display:block;font-size:22px;font-weight:400}#tabs .on{color:#fff}
+#pv{width:100%;height:110px;border-radius:14px;object-fit:cover;background:#ffffff0d;margin:6px 0}
+#pinov{position:fixed;inset:0;background:#0a0e1a;z-index:9;display:none;flex-direction:column;justify-content:center;padding:30px;gap:12px;text-align:center}
+#pinov input{font-size:32px;text-align:center;letter-spacing:10px}
+</style>
+<div id="st">Connecting…</div>
+<div id="pinov"><h2>Enter PIN shown on TV</h2><input id="pi" inputmode="numeric" maxlength="4"><button id="pc" style="background:#4f8cff">Connect</button></div>
+<section id="r" class="on">
+  <div class="ring"><button class="u rp" data-k="up">▲</button><button class="l rp" data-k="left">◀</button><button class="ok" data-k="ok">OK</button><button class="r rp" data-k="right">▶</button><button class="d rp" data-k="down">▼</button></div>
+  <div class="row"><button data-k="back">⮌ Back</button><button data-k="home">⌂ Home</button><button data-k="exit">✕ Exit app</button></div>
+  <div class="row"><button data-k="rew">⏪</button><button data-k="play">▶</button><button data-k="pause">⏸</button><button data-k="stop">⏹</button><button data-k="fwd">⏩</button></div>
+  <div class="row"><button class="rp" data-k="voldown">🔉 −</button><button data-k="mute">🔇</button><button class="rp" data-k="volup">🔊 +</button></div>
+  <div class="row"><button data-k="lock">🔒 Lock</button><button data-k="settings">⚙ Settings</button><button data-k="power">⏻ Power</button></div>
+</section>
+<section id="m">
+  <div id="tp">Drag to move cursor<br>Tap to click · two fingers to scroll</div>
+  <div class="row"><button id="clk">Click</button><button data-k="back">⮌ Back</button></div>
+</section>
+<section id="v">
+  <div class="row"><button id="mic" style="height:84px;font-size:19px;background:linear-gradient(135deg,#4f8cff,#7c5cff)">🎙 Tap &amp; speak</button></div>
+  <div class="row"><button data-k="voice">🖥 Use TV microphone</button></div>
+  <input id="q" placeholder="Say or type: open Netflix / search lo-fi">
+  <div class="row"><button id="go">Search / Open</button></div>
+  <h4>Live keyboard (types into the TV)</h4>
+  <textarea id="kb" rows="2" placeholder="Type here…" autocapitalize="off"></textarea>
+  <div class="row"><button data-k="ok">↵ Enter</button><button id="clr">Clear</button></div>
+</section>
+<section id="s">
+  <h4>Add app</h4><input id="an" placeholder="Name"><input id="au" placeholder="Website, e.g. hotstar.com" autocapitalize="off">
+  <img id="pv" hidden><div class="row"><button id="pick">🖼 Thumbnail…</button><button id="aa" style="background:#4f8cff">＋ Add to TV</button></div>
+  <input type="file" id="tf" accept="image/*" hidden><input type="file" id="wf" accept="image/*" hidden>
+  <h4>Wallpaper</h4><div class="row"><button id="wp">Upload from phone</button></div>
+</section>
+<div id="tabs"><button class="on" data-tab="r"><b>◉</b>Remote</button><button data-tab="m"><b>☝</b>Mouse</button><button data-tab="v"><b>⌨</b>Type</button><button data-tab="s"><b>＋</b>Apps</button></div>
+<script>
+const $ = s => document.querySelector(s), st = $('#st');
+let P = new URLSearchParams(location.search).get('pin') || localStorage.pin, ws, thumb = '';
+if (P) { localStorage.pin = P; history.replaceState(null, '', '/'); } else $('#pinov').style.display = 'flex';
+$('#pc').onclick = () => { P = $('#pi').value; localStorage.pin = P; $('#pinov').style.display = 'none'; conn(); };
+function conn() {
+  if (!P) return; clearTimeout(conn.t);
+  ws = new WebSocket(`ws://${location.host}/?pin=${P}`);
+  ws.onopen = () => { conn.f = 0; st.textContent = '● Connected to TV'; st.className = 'ok'; };
+  ws.onclose = e => { st.className = ''; if (e.code == 4001) { localStorage.removeItem('pin'); P = ''; st.textContent = 'Wrong PIN'; $('#pinov').style.display = 'flex'; } else { conn.f = (conn.f || 0) + 1; st.textContent = conn.f > 2 ? "Can't reach the TV (" + location.host + "). Same Wi-Fi (not Guest)? Router AP-isolation off? Firewall prompt approved on the PC?" : 'Reconnecting…'; conn.t = setTimeout(conn, 1500); } };
+}
+conn(); document.addEventListener('visibilitychange', () => !document.hidden && (!ws || ws.readyState > 1) && conn());
+const S = o => { S0(o); if (navigator.vibrate) navigator.vibrate(10); };
+let rt, ri;
+document.addEventListener('pointerdown', e => {
+  const b = e.target.closest('button'); if (!b) return; const k = b.dataset.k;
+  if (k) { S({ t: 'key', k }); if (b.classList.contains('rp')) { rt = setTimeout(() => ri = setInterval(() => S({ t: 'key', k }), 120), 380); } }
+  if (b.dataset.tab) { document.querySelectorAll('#tabs button,section').forEach(x => x.classList.remove('on')); b.classList.add('on'); $('#' + b.dataset.tab).classList.add('on'); }
+});
+['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => document.addEventListener(ev, () => { clearTimeout(rt); clearInterval(ri); }));
+const tp = $('#tp'); let lx, ly, t0, mv, two;
+tp.ontouchstart = e => { lx = e.touches[0].clientX; ly = e.touches[0].clientY; t0 = Date.now(); mv = 0; two = e.touches.length > 1; };
+tp.ontouchmove = e => { const t = e.touches[0], dx = t.clientX - lx, dy = t.clientY - ly; lx = t.clientX; ly = t.clientY; mv += Math.abs(dx) + Math.abs(dy); two = two || e.touches.length > 1; S0(two ? { t: 'scroll', dy: dy * 4 } : { t: 'move', dx, dy }); };
+tp.ontouchend = () => { if (mv < 8 && Date.now() - t0 < 300 && !two) S({ t: 'click' }); };
+const S0 = o => { if (ws && ws.readyState == 1) ws.send(JSON.stringify(o)); else fetch('/cmd?pin=' + P, { method: 'POST', body: JSON.stringify(o) }).then(x => { if (x.ok) { st.textContent = '● Connected (HTTP mode)'; st.className = 'ok'; } }).catch(() => {}); };
+$('#clk').onclick = () => S({ t: 'click' });
+$('#go').onclick = () => $('#q').value && S({ t: 'voice', v: $('#q').value });
+$('#q').onkeydown = e => e.key === 'Enter' && $('#go').click();
+const kb = $('#kb'); let pv = '';
+kb.oninput = () => { const v = kb.value; let i = 0; while (i < pv.length && i < v.length && pv[i] === v[i]) i++; for (let n = pv.length - i; n > 0; n--) S0({ t: 'key', k: 'bksp' }); if (v.length > i) S0({ t: 'text', v: v.slice(i) }); pv = v; };
+$('#clr').onclick = () => { for (let n = pv.length; n > 0; n--) S0({ t: 'key', k: 'bksp' }); kb.value = pv = ''; };
+$('#mic').onclick = () => {
+  const R = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!R) return alert('Voice not available in this browser — tap the mic key on your keyboard instead.');
+  const r = new R(); r.onresult = e => { $('#q').value = e.results[0][0].transcript; S({ t: 'voice', v: $('#q').value }); }; r.onerror = e => alert('Mic blocked (' + e.error + '). Use your keyboard mic key in the box.'); r.start();
+};
+async function fit(file, w, h, cover, q) {
+  const b = await createImageBitmap(file), c = document.createElement('canvas');
+  const sc = cover ? Math.max(w / b.width, h / b.height) : Math.min(1, w / b.width, h / b.height);
+  c.width = cover ? w : Math.round(b.width * sc); c.height = cover ? h : Math.round(b.height * sc);
+  c.getContext('2d').drawImage(b, (c.width - b.width * sc) / 2, (c.height - b.height * sc) / 2, b.width * sc, b.height * sc);
+  return new Promise(r => c.toBlob(r, 'image/jpeg', q));
+}
+$('#pick').onclick = () => $('#tf').click(); $('#wp').onclick = () => $('#wf').click();
+$('#tf').onchange = async e => { const f = e.target.files[0]; if (!f) return; const bl = await fit(f, 480, 270, true, .82); const fr = new FileReader(); fr.onload = () => { thumb = fr.result; $('#pv').src = thumb; $('#pv').hidden = false; }; fr.readAsDataURL(bl); };
+$('#aa').onclick = () => { if (!$('#an').value || !$('#au').value) return alert('Enter name and website'); S({ t: 'addapp', name: $('#an').value, url: $('#au').value, thumb }); $('#an').value = $('#au').value = thumb = ''; $('#pv').hidden = true; };
+$('#wf').onchange = async e => { const f = e.target.files[0]; if (!f) return; await fetch('/wallpaper?pin=' + P, { method: 'POST', body: await fit(f, 1920, 1080, false, .85) }); alert('Wallpaper updated'); };
+</script>
