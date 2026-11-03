@@ -1,10 +1,17 @@
-# OrcaCast TV
+<img width="1097" height="119" alt="image" src="https://github.com/user-attachments/assets/27be1767-253d-45e3-bee9-7dbf5bbc76aa" />
+
 
 > A living-room-friendly web launcher for Windows, with a phone remote, TV-style navigation, and voice input.
 
 [![Release](https://img.shields.io/badge/release-source-4f8cff)](../../releases)
 [![License](https://img.shields.io/badge/license-MIT-5ee0a0)](LICENSE)
 [![Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#requirements)
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/c2cbd170-a9be-4da5-9428-126a82a0a744" />
+
+***
+
+
 
 Ever owned a extra monitor or a LED TV which you want to set up as a TV in your room? Ever ordered a TV or a 4k projector and realised it doesnt come with any software? Then OrcaCast is just for you. OrcaCast TV is open source TV Software simulations whic turns a Windows PC connected to a TV into a simple, remote-controlled entertainment hub. Launch web apps from a 10-foot interface, control them with a keyboard or phone, and keep the PC hidden behind a TV-friendly home screen.
 
