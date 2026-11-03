@@ -1,11 +1,5 @@
 <img width="1097" height="119" alt="image" src="https://github.com/user-attachments/assets/27be1767-253d-45e3-bee9-7dbf5bbc76aa" />
 
-<h1>Preview</h1>
-
-
-<img width="1657" height="714" alt="home" src="https://github.com/user-attachments/assets/25ffe780-8081-44b5-a245-662e23f8acbd" />
-
-
 ***
 
 [![Release](https://img.shields.io/badge/release-source-4f8cff)](../../releases)
@@ -13,15 +7,51 @@
 [![Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#requirements)
 
 
-Ever owned a extra monitor or a LED TV which you want to set up as a TV in your room? Ever ordered a TV or a 4k projector and realised it doesnt come with any software? Then OrcaCast is just for you. OrcaCast TV is open source TV Software simulations whic turns a Windows PC connected to a TV into a simple, remote-controlled entertainment hub. Launch web apps from a 10-foot interface, control them with a keyboard or phone, and keep the PC hidden behind a TV-friendly home screen.
-
-
+Ever owned a extra monitor or a LED TV which you want to set up as a TV in your room? Ever ordered a TV or a 4k projector and realised it doesnt come with any software? Then OrcaCast is just for you. OrcaCast TV is open source TV Software simulations whic turns a Windows PC connected to a TV into a simple, remote-controlled entertainment hub. Launch web apps from a 10-foot interface, control them with a keyboard or phone, and keep the PC hidden behind a TV-friendly home screen. OrcaCast TV is currently distributed as a open-source Windows desktop application. The project is under active development and has many bugs and certain features do not work and the interface may change between releases.
 
 # Latest Release
-Latest Release here: <br><br>
-[<img width="248" height="29" alt="image" src="https://github.com/user-attachments/assets/b884c688-c1c9-4ec0-83bd-5b51d03102f2" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.2.0-beta)
-> **Status:** OrcaCast TV is currently distributed as a open-source Windows desktop application.
-> The project is under active development and has many bugs and certain features do not work and the interface may change between releases.
+### Latest Release 1.3.0 here: <br><br>
+<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/20ff8565-33a1-47e1-ba23-e69b06b30005" />
+<br><br>
+
+> Changelog
+> * Added Online Radio Station Player
+> * Added Online TV Stream Player
+
+<br>
+
+> Issues
+> * Text in YouTube at certain areas still have a absurd black background
+> * The Remote on mobile is still not working, despite giving firewall permissions.
+
+
+# Older Releases
+### Release 1.2.0 here: <br><br>
+[<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/b884c688-c1c9-4ec0-83bd-5b51d03102f2" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.2.0-beta)
+> Changelog
+> * Initial Release after development and testing on local machine
+> * Added Youtube for TV to spoof TizenOS
+> * Added other apps like Spotify, Amazon Prime, Netflix and Twitch
+> * Added ability to change wallpapers
+> * Added Liquid animations
+> * Added keybinds and global listeners
+> * Added ability to add chromium unpacked extensions
+
+<br>
+
+> Issues
+> * Youtube App exiitng at times cuases crashes
+> * Text in YouTube at certain areas have a absurd black background
+> * Exiting to home screen while keeping an app open and returning to it crashed the app
+> * The Remote on mobile is not working, despite giving firewall permissions.
+
+<br><br><br><br>
+
+# About OrcaCast TV
+
+<h2>Preview</h2>
+
+<img width="1657" height="714" alt="home" src="https://github.com/user-attachments/assets/25ffe780-8081-44b5-a245-662e23f8acbd" />
 
 ## Contents
 
