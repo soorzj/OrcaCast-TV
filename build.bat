@@ -2,5 +2,5 @@
 call npm install
 call npm run dist
 echo.
-echo Done. Your .exe files are in the dist folder.
+echo Done. OrcaCast Installer by soorzj is in dist folder.
 pause
