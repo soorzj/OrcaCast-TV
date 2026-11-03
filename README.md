@@ -1,5 +1,8 @@
 <img width="1097" height="119" alt="image" src="https://github.com/user-attachments/assets/27be1767-253d-45e3-bee9-7dbf5bbc76aa" />
 
+<h1>Preview</h1>
+
+
 <img width="1657" height="714" alt="home" src="https://github.com/user-attachments/assets/25ffe780-8081-44b5-a245-662e23f8acbd" />
 
 
@@ -80,7 +83,7 @@ playback quality, and supported controls are determined by each service.
    Click on the green `Code<>` Button in the repository and click `Download ZIP` option in the bottom
    
 3. Navigate to the downloaded `.zip` and extract it using a extractor like WinRAR or 7Z
-4. Navigate to the extracted files and open the install.bat, click run if safety net is triggered.
+4. Navigate to the extracted files and open the `build.bat`, click run if safety net is triggered.
 5. Let the Node js make the installer
 6. After Node js finishes, open a `dist` folder have been created. Open it and run `OrcaCast TV Setup 1.2.0.exe`.
 7. If SmartScreen is triggered, click on `More Options` and click on `Run Anyway`
