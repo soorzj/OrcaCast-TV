@@ -1,0 +1,130 @@
+<!doctype html>
+<meta charset="utf-8"><title>OrcaCast Player</title>
+<style>
+*{box-sizing:border-box;margin:0}
+:root{--a1:#c026d3;--a2:#6d28d9}body.tv{--a1:#0ea5e9;--a2:#0d9488}
+body{height:100vh;overflow:hidden;background:#05070d;color:#fff;font-family:'Segoe UI Variable','Segoe UI',system-ui,sans-serif;cursor:none;user-select:none}
+#bg{position:fixed;inset:0;background:radial-gradient(60% 55% at 12% 12%,color-mix(in srgb,var(--a1) 65%,transparent),transparent),radial-gradient(55% 60% at 92% 90%,color-mix(in srgb,var(--a2) 65%,transparent),transparent),#070b16}
+video{position:fixed;inset:0;width:100%;height:100%;background:#000;object-fit:contain;display:none}
+body.tv.full video{display:block}body.full #bg,body.full #ui{display:none}
+#ui{position:fixed;inset:0;padding:44px 64px 90px;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:20px;margin-bottom:22px}header h1{font-size:44px;font-weight:300}header small{font-size:18px;opacity:.6;margin-left:auto}
+.ic{width:62px;height:62px;border-radius:18px;display:grid;place-items:center;font-size:34px;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 10px 40px color-mix(in srgb,var(--a1) 50%,transparent)}
+main{flex:1;display:flex;gap:44px;min-height:0}
+#list{flex:1;overflow:hidden;padding:4px 24px 4px 4px}
+.st{display:flex;align-items:center;gap:20px;padding:14px 22px;border-radius:20px;margin:0 0 12px;background:#ffffff12;border:2px solid transparent;transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s}
+.st.on{background:#ffffff2e;border-color:#fff;transform:translateX(10px) scale(1.01)}
+.st>b{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:24px;flex:none}
+.st>div{flex:1;min-width:0}.st span{display:block;font-size:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st small{opacity:.55;font-size:15px}
+.st.live{background:color-mix(in srgb,var(--a1) 30%,#ffffff12)}
+.rm{font-style:normal;padding:8px 14px;border-radius:12px;opacity:0;font-size:20px}.st.on .rm{opacity:.5}.rm.on{opacity:1!important;background:#e11d48}
+.eq{display:inline-flex;gap:3px;height:22px;align-items:flex-end}.eq u{width:4px;background:#fff;height:30%;animation:eq 1s infinite ease-in-out}.eq u:nth-child(2){animation-delay:.25s}.eq u:nth-child(3){animation-delay:.5s}
+body:not(.playing) .eq u{animation-play-state:paused}@keyframes eq{50%{height:100%}}
+#np{width:470px;border-radius:28px;padding:34px;background:#ffffff14;border:1px solid #ffffff26;display:flex;flex-direction:column;justify-content:center;gap:14px;text-align:center}
+body.tv #np{display:none}
+#np .ic{width:120px;height:120px;font-size:64px;margin:0 auto 10px;border-radius:34px}#np h2{font-size:30px;font-weight:400}#np p{opacity:.7;font-size:18px}
+#np .eq{height:40px;margin:6px auto 0}#np .eq u{width:7px}
+#hint{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:10px 26px;border-radius:99px;background:#ffffff1a;border:1px solid #ffffff22;font-size:16px;opacity:.85;white-space:nowrap}
+body.full #hint{display:none}
+#banner{position:fixed;top:40px;left:50px;padding:16px 28px;border-radius:20px;background:#0b1020e6;border:1px solid #ffffff30;font-size:26px;display:none;z-index:5}#banner small{display:block;font-size:16px;opacity:.7;margin-top:2px}
+#drawer{position:fixed;top:0;bottom:0;left:0;width:470px;padding:34px 26px;background:linear-gradient(90deg,#05070df2,#05070dcc 80%,transparent);display:none;z-index:6;overflow:hidden}
+#drawer.show,#banner.show{display:block}
+#md{position:fixed;inset:0;background:#05070de6;display:none;place-items:center;z-index:9}#md.show{display:grid}
+.box{width:760px;padding:36px 44px;border-radius:28px;background:#0b1020;border:1px solid #ffffff2a}.box h2{font-weight:300;font-size:30px;margin-bottom:18px}
+.box input{display:block;width:100%;padding:16px 20px;margin:10px 0;border-radius:14px;border:2px solid transparent;background:#ffffff14;color:#fff;font:22px inherit;outline:0}
+.box input.on{border-color:#fff;background:#ffffff26}.box input:focus{background:#fff;color:#111}
+.btns{display:flex;gap:14px;margin-top:14px}.bt{flex:1;text-align:center;padding:15px;border-radius:14px;font-size:22px;background:#ffffff14;border:2px solid transparent}.bt.on{background:#fff;color:#111}
+.box p{margin-top:16px;opacity:.5;font-size:15px}
+#toast{position:fixed;top:36px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:99px;background:#0b1020f0;border:1px solid #ffffff30;font-size:21px;display:none;z-index:20}
+</style>
+<div id="bg"></div><video id="m" playsinline></video>
+<div id="ui"><header><div class="ic" id="ic"></div><h1 id="ttl"></h1><small id="cnt"></small></header>
+<main><div id="list"></div><div id="np"></div></main><div id="hint"></div></div>
+<div id="banner"></div><div id="drawer"></div>
+<div id="md"><div class="box"><h2 id="mt"></h2><input id="in1" placeholder="Name"><input id="in2" placeholder="Stream URL  (.mp3 · .aac · .m3u8 · .pls · .m3u)"><div class="btns"><div class="bt" id="b1">Save</div><div class="bt" id="b2">Cancel</div></div><p>Type with your phone remote (Type tab) or a keyboard · ▲▼ move · OK select</p></div></div>
+<div id="toast"></div>
+<script src="node_modules/hls.js/dist/hls.min.js"></script>
+<script>
+const mode = new URLSearchParams(location.search).get('mode') === 'tv' ? 'tv' : 'radio', tv = mode === 'tv';
+document.body.className = mode;
+const $ = s => document.querySelector(s), m = $('#m'), KEY = 'oc_' + mode;
+const word = tv ? 'channel' : 'station';
+$('#ic').textContent = tv ? '📺' : '📻'; $('#ttl').textContent = tv ? 'Live TV' : 'Online Radio';
+let st = null; try { st = JSON.parse(localStorage.getItem(KEY)); } catch {}
+if (!Array.isArray(st)) { st = tv ? [{ name: 'Sample · Big Buck Bunny (test stream)', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' }] : [{ name: 'Sample · SomaFM Groove Salad', url: 'https://ice1.somafm.com/groovesalad-128-mp3' }]; save(); }
+function save() { localStorage.setItem(KEY, JSON.stringify(st)); }
+let i = 0, sub = 0, cur = -1, full = false, drawer = false, modal = false, mf = 0, hls = null, tries = 0, bt, tt, status = '';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const host = u => { try { return new URL(u).hostname; } catch { return u; } };
+const hue = n => [...n].reduce((a, c) => a + c.charCodeAt(0) * 7, 0) % 360;
+const row = (s, n, on) => `<div class="st ${on ? 'on' : ''} ${cur === n ? 'live' : ''}"><b style="background:hsl(${hue(s.name)} 55% 36%)">${tv ? n + 1 : esc(s.name[0] || '♪')}</b><div><span>${esc(s.name)}</span><small>${esc(host(s.url))}</small></div>${cur === n ? '<i class="eq"><u></u><u></u><u></u></i>' : ''}<em class="rm ${on && sub ? 'on' : ''}">🗑 Remove</em></div>`;
+const addRow = on => `<div class="st add ${on ? 'on' : ''}"><b>＋</b><div><span>Add ${word}</span><small>Paste a stream URL</small></div></div>`;
+function toast(t) { const e = $('#toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(tt); tt = setTimeout(() => e.style.display = 'none', 2400); }
+function render() {
+  const n = st.length, rows = on => st.map((s, k) => row(s, k, on && i === k)).join('') + addRow(on && i === n);
+  $('#list').innerHTML = rows(!drawer && !full && !modal); $('#drawer').innerHTML = drawer ? rows(true) : '';
+  $('#drawer').classList.toggle('show', drawer);
+  $('#cnt').textContent = n + (tv ? ' channels' : ' stations');
+  const c = st[cur];
+  $('#np').innerHTML = c ? `<div class="ic">${tv ? '📺' : '📻'}</div><h2>${esc(c.name)}</h2><p>${esc(status)}</p><i class="eq"><u></u><u></u><u></u></i>` : `<div class="ic">${tv ? '📺' : '📻'}</div><h2>Nothing playing</h2><p>Pick a ${word} and press OK</p>`;
+  $('#hint').textContent = tv ? '▲▼ Browse · OK Play · ▶ Remove · Home: keep playing in background · Esc: exit' : '▲▼ Browse · OK Play · ▶ Remove · Home: keep playing in background · Esc: exit';
+  document.body.classList.toggle('full', full); const on = document.querySelector('.st.on'); if (on) on.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+function banner() {
+  const c = st[cur]; if (!c || !tv) return; const b = $('#banner');
+  b.innerHTML = `CH ${cur + 1} · ${esc(c.name)}<small>${esc(status)}</small>`; b.classList.add('show'); clearTimeout(bt); bt = setTimeout(() => b.classList.remove('show'), 4000);
+}
+const setS = t => { status = t; const p = $('#np p'); if (p && st[cur]) p.textContent = t; if (full) banner(); document.body.classList.toggle('playing', t === 'Playing'); };
+function teardown() { if (hls) { hls.destroy(); hls = null; } m.removeAttribute('src'); m.load(); }
+async function play(n) {
+  const s = st[n]; if (!s) return; cur = n; i = n; full = tv; drawer = false; tries = 0; setS('Connecting…'); render(); banner();
+  let url = s.url.trim();
+  if (/\.(pls|m3u)(\?.*)?$/i.test(url)) { try { const t = await (await fetch(url)).text(), mm = t.match(/https?:\/\/[^\s"']+/i); if (mm) url = mm[0]; } catch {} }
+  teardown();
+  if (/m3u8/i.test(url) && window.Hls && Hls.isSupported()) {
+    hls = new Hls({ lowLatencyMode: true });
+    hls.on(Hls.Events.ERROR, (e, d) => { if (!d.fatal) return; if (d.type === Hls.ErrorTypes.NETWORK_ERROR && tries++ < 3) { setS('Reconnecting…'); hls.startLoad(); } else if (d.type === Hls.ErrorTypes.MEDIA_ERROR && tries++ < 3) hls.recoverMediaError(); else setS('Could not play this stream'); });
+    hls.loadSource(url); hls.attachMedia(m);
+  } else m.src = url;
+  try { await m.play(); } catch (e) { if (cur === n && status !== 'Playing') setS('Could not start playback – check the URL'); }
+}
+function stop() { m.pause(); teardown(); cur = -1; full = false; drawer = false; setS(''); render(); }
+const zap = d => { if (st.length) play((cur + d + st.length) % st.length); };
+m.onplaying = () => setS('Playing'); m.onwaiting = () => setS('Buffering…');
+m.onerror = () => { if (m.getAttribute('src')) setS('Could not play this stream – check the URL or format'); };
+function remove(n) { const s = st.splice(n, 1)[0]; if (cur === n) stop(); else if (cur > n) cur--; i = Math.min(i, st.length); sub = 0; save(); toast('Removed ' + s.name); render(); }
+function openModal() { modal = true; mf = 0; $('#mt').textContent = 'Add ' + word; $('#in1').value = $('#in2').value = ''; $('#md').classList.add('show'); mdraw(); }
+function closeModal() { modal = false; $('#md').classList.remove('show'); document.activeElement.blur(); render(); }
+function mdraw() { $('#in1').classList.toggle('on', mf === 0); $('#in2').classList.toggle('on', mf === 1); $('#b1').classList.toggle('on', mf === 2); $('#b2').classList.toggle('on', mf === 3); }
+function saveSt() {
+  let url = $('#in2').value.trim(), name = $('#in1').value.trim(); if (!url) return toast('Enter a stream URL');
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url; if (!name) name = host(url);
+  st.push({ name, url }); save(); i = st.length - 1; closeModal(); toast('Added ' + name);
+}
+function mnav(k) {
+  if (k === 'up') mf = Math.max(0, mf - 1); else if (k === 'down') mf = Math.min(3, mf + 1);
+  else if (k === 'left' && mf === 3) mf = 2; else if (k === 'right' && mf === 2) mf = 3;
+  else if (k === 'ok') { if (mf < 2) $(mf ? '#in2' : '#in1').focus(); else if (mf === 2) return saveSt(); else return closeModal(); }
+  mdraw();
+}
+function nav(k) {
+  if (modal) return mnav(k);
+  if (full && !drawer) { if (k === 'up') zap(-1); else if (k === 'down') zap(1); else if (k === 'ok') { drawer = true; i = Math.max(0, cur); render(); } return; }
+  const n = st.length;
+  if (k === 'up') { i = Math.max(0, i - 1); sub = 0; } else if (k === 'down') { i = Math.min(n, i + 1); sub = 0; }
+  else if (k === 'right' && i < n) sub = 1; else if (k === 'left') { if (drawer && !sub) drawer = false; sub = 0; }
+  else if (k === 'ok') { if (i === n) return openModal(); if (sub) return remove(i); return play(i); }
+  render();
+}
+addEventListener('keydown', e => {
+  const a = document.activeElement, typing = a && a.tagName === 'INPUT', k = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', Enter: 'ok' }[e.key];
+  if (typing) { if (e.key === 'Enter') { a.blur(); e.preventDefault(); } else if (k === 'up' || k === 'down') { a.blur(); nav(k); } return; }
+  if (k) { e.preventDefault(); nav(k); }
+});
+window.__back = () => { // called by OrcaCast TV for Esc / Back: return 1 if handled here
+  const a = document.activeElement; if (a && a.tagName === 'INPUT') { a.blur(); return 1; }
+  if (modal) { closeModal(); return 1; } if (drawer) { drawer = false; render(); return 1; }
+  if (sub) { sub = 0; render(); return 1; } if (full) { stop(); return 1; } return 0;
+};
+render();
+</script>
