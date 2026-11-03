@@ -26,6 +26,8 @@ const defaults = {
 };
 let cfg; try { cfg = { ...defaults, ...JSON.parse(fs.readFileSync(CF)) }; } catch { cfg = defaults; }
 const save = () => { fs.mkdirSync(D, { recursive: true }); fs.writeFileSync(CF, JSON.stringify(cfg)); };
+const BUILTIN = [{ name: 'Radio', url: 'orcacast://radio', color: '#a21caf', icon: '📻' }, { name: 'Live TV', url: 'orcacast://tv', color: '#0369a1', icon: '📺' }];
+if (!cfg.seeded) { for (const b of BUILTIN) if (!cfg.apps.some(a => a.url === b.url)) cfg.apps.push(b); cfg.seeded = 1; }
 save();
 
 let win, ov, view, viewHidden = false, port = 8787, off = false, listening = false, homeEdit = false, viewEdit = false, synthUntil = 0, ovT;
@@ -48,13 +50,13 @@ function ips() {
   const r = a => a.startsWith('192.168.') ? 0 : a.startsWith('10.') ? 1 : 2;
   return out.length ? out.sort((a, b) => r(a) - r(b)) : ['localhost'];
 }
-const push = () => send('cfg', { apps: cfg.apps, theme: cfg.theme || 0, login: app.getLoginItemSettings().openAtLogin,
+const push = () => send('cfg', { apps: cfg.apps, theme: cfg.theme || 0, ytShadow: cfg.ytShadow !== false, login: app.getLoginItemSettings().openAtLogin,
   wall: fs.existsSync(WP) ? pathToFileURL(WP).href + '?' + Date.now() : cfg.wallUrl || null });
 async function pushPair() {
   const urls = [...ips(), os.hostname() + '.local'].map(a => `http://${a}:${port}`);
   send('pair', { urls, pin: cfg.pin, qr: await QR.toDataURL(`${urls[0]}/?pin=${cfg.pin}`, { margin: 1, width: 240 }) });
 }
-const norm = u => /^https?:/i.test(u) ? u : 'https://' + u;
+const norm = u => /^(https?|orcacast):/i.test(u) ? u : 'https://' + u;
 function addApp(d) {
   if (!d || !d.name || !d.url) return;
   cfg.apps.push({ name: String(d.name).slice(0, 30), url: norm(String(d.url).trim()), thumb: d.thumb || undefined });
@@ -66,6 +68,18 @@ const UA_TV = 'Mozilla/5.0 (SMART-TV; LINUX; Tizen 7.0) AppleWebKit/537.36 (KHTM
 const YT = /youtube\.com\/tv/;
 function ytUrl(u) { try { const x = new URL(u); x.searchParams.set('env_forceFullAnimation', '1'); return x.toString(); } catch { return u; } } // YouTube TV: full animations
 const YT_JS = `(()=>{if(window.__ocb)return;window.__ocb=1;setInterval(()=>{const b=document.body;if(!b)return;for(const c of [...b.children].flatMap(x=>[x,...x.children])){if(c.childElementCount<8){const t=c.textContent||'';if(t.length<500&&t.includes('DEBUG QUERY PARAMETERS'))c.style.display='none'}}},1500)})()`;
+const YT_FIX_JS = `(()=>{if(window.__ocs)return;window.__ocs=1;
+const SH='0 0 1px #000,0 1px 3px rgba(0,0,0,.95)',fixed=new WeakSet();
+const dark=c=>{const n=(c||'').match(/[0-9.]+/g);if(!n||n.length<3)return false;const a=n.length>3?+n[3]:1;return a>0.04&&+n[0]<60&&+n[1]<60&&+n[2]<60};
+function scan(){const v=document.querySelector('video');if(!v||!v.offsetWidth||!document.body)return;
+const vr=v.getBoundingClientRect(),W=innerWidth,S=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n,c=0;
+while((n=w.nextNode())&&c<800){if(!n.nodeValue.trim())continue;c++;let e=n.parentElement;for(let d=0;e&&d<3;d++,e=e.parentElement)S.add(e)}
+for(const e of S){if(fixed.has(e))continue;if(!dark(getComputedStyle(e).backgroundColor))continue;const r=e.getBoundingClientRect();
+if(r.height<1||r.height>170||r.width>W*0.96||r.bottom<vr.top||r.top>vr.bottom||r.right<vr.left||r.left>vr.right)continue;
+if(e.closest('button,[role=button]')||e.querySelector('video,img,canvas,button'))continue;
+fixed.add(e);e.style.setProperty('background','transparent','important');e.style.setProperty('text-shadow',SH,'important')}}
+let dirty=1;new MutationObserver(()=>{dirty=1}).observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class']});
+setInterval(()=>{if(!dirty)return;dirty=0;(window.requestIdleCallback||setTimeout)(scan)},1000)})()`;
 const CURSOR_JS = `(()=>{let c,t;document.addEventListener('mousemove',e=>{if(!c){c=document.createElement('div');c.style.cssText='position:fixed;z-index:2147483647;width:22px;height:22px;border-radius:50%;background:#fffd;border:3px solid #000;box-shadow:0 2px 8px #0008;pointer-events:none;transform:translate(-50%,-50%);transition:opacity .3s';document.documentElement.appendChild(c)}c.style.opacity=1;c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';clearTimeout(t);t=setTimeout(()=>c.style.opacity=0,3000)},true)})()`;
 const EDIT_JS = `(()=>{let L=-1;const r=v=>{if(v!==L){L=v;console.log('__TVEDIT__'+v)}};document.addEventListener('focusin',e=>{const t=e.target;r((t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))?1:0)},true);document.addEventListener('focusout',()=>r(0),true)})()`;
 function layout() { if (view) { const [w, h] = win.getContentSize(); view.setBounds({ x: 0, y: 0, width: w, height: h }); } }
@@ -73,7 +87,8 @@ function launch(url) { try { launch0(url); } catch (e) { console.log('launch err
 function launch0(url) {
   if (view && view.appUrl === url) return showApp();
   closeApp(true);
-  view = new WebContentsView({ webPreferences: { partition: 'persist:apps', backgroundThrottling: false, spellcheck: false } });
+  const local = /^orcacast:\/\/(radio|tv)$/.exec(url);
+  view = new WebContentsView({ webPreferences: { partition: 'persist:apps', backgroundThrottling: false, spellcheck: false, ...(local ? { webSecurity: false } : {}) } });
   view.appUrl = url; viewHidden = false; viewEdit = false;
   let host = url; try { host = new URL(url).hostname.replace(/^www\./, ''); } catch {}
   view.appName = (cfg.apps.find(a => a.url === url) || {}).name || host;
@@ -82,10 +97,10 @@ function launch0(url) {
   wc.setWindowOpenHandler(({ url }) => { wc.loadURL(url); return { action: 'deny' }; });
   hook(wc);
   wc.on('console-message', (e, l, msg) => { const m = typeof msg === 'string' ? msg : (e && e.message) || ''; if (m.startsWith('__TVEDIT__')) viewEdit = m.endsWith('1'); });
-  wc.on('dom-ready', () => { try { wc.executeJavaScript(CURSOR_JS + ';' + EDIT_JS + (YT.test(wc.getURL()) ? ';' + YT_JS : '')).catch(() => {}); } catch {} });
+  wc.on('dom-ready', () => { try { wc.executeJavaScript(CURSOR_JS + ';' + EDIT_JS + (YT.test(wc.getURL()) ? ';' + YT_JS + (cfg.ytShadow === false ? '' : ';' + YT_FIX_JS) : '')).catch(() => {}); } catch {} });
   wc.on('render-process-gone', (e, d) => { log('app renderer gone', d && d.reason); if (view && view.webContents === wc) { closeApp(); toast('The app stopped responding – back to home'); } });
   try { win.contentView.addChildView(view, 0); } catch { win.contentView.addChildView(view); } // index 0 keeps the OSD layer on top
-  layout(); wc.loadURL(yt ? ytUrl(url) : url); wc.focus(); sendApp();
+  layout(); if (local) wc.loadFile(path.join(__dirname, 'player.html'), { query: { mode: local[1] } }); else wc.loadURL(yt ? ytUrl(url) : url); wc.focus(); sendApp();
 }
 function closeApp(quiet) {
   if (!view) return;
@@ -124,6 +139,7 @@ const VOSD = { volup: ['🔊', 'Volume up'], voldown: ['🔉', 'Volume down'], m
 const press = (wc, code, ch) => { if (code === 'Escape') synthUntil = Date.now() + 150; wc.focus(); wc.sendInputEvent({ type: 'keyDown', keyCode: code }); if (ch) wc.sendInputEvent({ type: 'char', keyCode: ch }); wc.sendInputEvent({ type: 'keyUp', keyCode: code }); };
 function setPower(v) { off = v; if (v) closeApp(); send('power', v); }
 function back(wc) {
+  if (/^file:/.test(wc.getURL())) return wc.executeJavaScript('window.__back?window.__back():0').then(r => { if (!r) closeApp(); }).catch(() => closeApp());
   if (/youtube\.com\/tv/.test(wc.getURL())) return press(wc, 'Escape');
   wc.executeJavaScript('document.fullscreenElement?(document.exitFullscreen(),1):0').then(r => { if (!r) wc.navigationHistory.canGoBack() ? wc.navigationHistory.goBack() : closeApp(); }).catch(() => {});
 }
@@ -234,6 +250,7 @@ ipcMain.on('pickwall', async () => {
   if (!r.canceled && r.filePaths[0]) { fs.copyFileSync(r.filePaths[0], WP); delete cfg.wallUrl; save(); push(); }
 });
 ipcMain.on('login', (e, v) => { app.setLoginItemSettings({ openAtLogin: v }); push(); });
+ipcMain.on('ytshadow', (e, v) => { cfg.ytShadow = !!v; save(); push(); });
 ipcMain.on('openlog', () => { log('log opened'); shell.showItemInFolder(LOG); });
 ipcMain.on('extdir', () => shell.openPath(EXT));
 ipcMain.on('fixfw', fixFw);
