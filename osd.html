@@ -1,9 +1,42 @@
-<!doctype html><meta charset="utf-8"><style>
-html,body{margin:0;background:transparent;overflow:hidden;font-family:'Segoe UI Variable','Segoe UI',system-ui,sans-serif;color:#fff}
-#o{position:fixed;top:30px;left:50%;transform:translate(-50%,-150px);display:flex;align-items:center;gap:16px;padding:15px 32px;border-radius:99px;background:#0b1020ee;border:1px solid #ffffff30;box-shadow:0 14px 50px #000a;font-size:26px;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
-#o.show{transform:translate(-50%,0)}#i{font-size:34px}
-</style><div id="o"><span id="i"></span><span id="t"></span></div>
+<!doctype html>
+<meta charset="utf-8">
+<style>
+    html,
+    body {
+        margin: 0;
+        background: transparent;
+        overflow: hidden;
+        font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+        color: #fff
+    }
+
+    #o {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translate(-50%, -150px);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 15px 32px;
+        border-radius: 99px;
+        background: #0b1020ee;
+        border: 1px solid #ffffff30;
+        box-shadow: 0 14px 50px #000a;
+        font-size: 26px;
+        transition: transform .45s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    #o.show {
+        transform: translate(-50%, 0)
+    }
+
+    #i {
+        font-size: 34px
+    }
+</style>
+<div id="o"><span id="i"></span><span id="t"></span></div>
 <script>
-const { ipcRenderer } = require('electron'), O = document.getElementById('o'), I = document.getElementById('i'), T = document.getElementById('t'); let h;
-ipcRenderer.on('osd', (e, d) => { I.textContent = d.icon || ''; I.style.display = d.icon ? '' : 'none'; T.textContent = d.text; O.classList.add('show'); clearTimeout(h); h = setTimeout(() => O.classList.remove('show'), (d.ms || 2100) - 450); });
+    const { ipcRenderer } = require('electron'), O = document.getElementById('o'), I = document.getElementById('i'), T = document.getElementById('t'); let h;
+    ipcRenderer.on('osd', (e, d) => { I.textContent = d.icon || ''; I.style.display = d.icon ? '' : 'none'; T.textContent = d.text; O.classList.add('show'); clearTimeout(h); h = setTimeout(() => O.classList.remove('show'), (d.ms || 2100) - 450); });
 </script>
