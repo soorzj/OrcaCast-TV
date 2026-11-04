@@ -2,33 +2,38 @@
 
 ***
 
-[![Release](https://img.shields.io/badge/release-source-4f8cff)](../../releases)
+[![Release](https://img.shields.io/badge/latest%20release-1.3.0%20beta-4f8cff)](../../releases)
+[![Last](https://img.shields.io/badge/last%20updated-4%20November%202026-ff00c3)](../../releases)
 [![License](https://img.shields.io/badge/license-MIT-5ee0a0)](LICENSE)
-[![Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#requirements)
+[![Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=data:image%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEgNC4yIDEwIDN2OEgxem0xMC0xLjQgMTItMS43VjExSDExek0xIDEyaDl2OEwxIDE4Ljh6bTEwIDBoMTJ2MTAuOUwxMSAyMXoiLz48L3N2Zz4%3D)](#requirements)
+[![made](https://img.shields.io/badge/made%20using-Claude%20Code-D77757?logo=claude&logoColor=white)](#requirements)
+![Hits](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2Fsoorzj%2FOrcaCast-TV.json&style=rounded-square&label=hits)
 
+  <img alt="Electron" src="https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white" />  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" />  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />  <img alt="HTML5" src="https://img.shields.io/badge/HTML5_Electron-E34F26?style=for-the-badge&logo=html5&logoColor=white" />  <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />  <img alt="hls.js" src="https://img.shields.io/badge/hls.js-FF6B35?style=for-the-badge" />
+        
 
 Ever owned a extra monitor or a LED TV which you want to set up as a TV in your room? Ever ordered a TV or a 4k projector and realised it doesnt come with any software? Then OrcaCast is just for you. OrcaCast TV is open source TV Software simulations whic turns a Windows PC connected to a TV into a simple, remote-controlled entertainment hub. Launch web apps from a 10-foot interface, control them with a keyboard or phone, and keep the PC hidden behind a TV-friendly home screen. OrcaCast TV is currently distributed as a open-source Windows desktop application. The project is under active development and has many bugs and certain features do not work and the interface may change between releases.
 
 # Latest Release
 ### Latest Release 1.3.0 here: <br><br>
-<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/20ff8565-33a1-47e1-ba23-e69b06b30005" />
+[<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/20ff8565-33a1-47e1-ba23-e69b06b30005" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.3.0-beta)
 <br><br>
 
-> Changelog
+> #### Changelog
 > * Added Online Radio Station Player
 > * Added Online TV Stream Player
 
 <br>
 
-> Issues
-> * Text in YouTube at certain areas still have a absurd black background
+> #### Issues
+> * Some Text in YouTube at certain areas still have a absurd black background. Others have been fixed.
 > * The Remote on mobile is still not working, despite giving firewall permissions.
 
 
 # Older Releases
 ### Release 1.2.0 here: <br><br>
 [<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/b884c688-c1c9-4ec0-83bd-5b51d03102f2" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.2.0-beta)
-> Changelog
+> #### Changelog
 > * Initial Release after development and testing on local machine
 > * Added Youtube for TV to spoof TizenOS
 > * Added other apps like Spotify, Amazon Prime, Netflix and Twitch
@@ -39,7 +44,7 @@ Ever owned a extra monitor or a LED TV which you want to set up as a TV in your 
 
 <br>
 
-> Issues
+> #### Issues
 > * Youtube App exiitng at times cuases crashes
 > * Text in YouTube at certain areas have a absurd black background
 > * Exiting to home screen while keeping an app open and returning to it crashed the app
