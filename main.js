@@ -2,7 +2,7 @@ const { app, BrowserWindow, WebContentsView, ipcMain, session, shell, dialog } =
 const path = require('path'), fs = require('fs'), os = require('os'), http = require('http'), cp = require('child_process');
 const { pathToFileURL } = require('url');
 const { WebSocketServer } = require('ws'), QR = require('qrcode');
-let Bonjour; try { Bonjour = require('bonjour-service').Bonjour; } catch {}
+let Bonjour; try { Bonjour = require('bonjour-service').Bonjour; } catch { }
 if (!app.requestSingleInstanceLock()) app.quit();
 app.commandLine.appendSwitch('ignore-gpu-blocklist');
 app.commandLine.appendSwitch('enable-gpu-rasterization');
@@ -11,7 +11,7 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 const D = app.getPath('userData'), CF = path.join(D, 'config.json'), WP = path.join(D, 'wallpaper.jpg'), EXT = path.join(D, 'extensions');
 const LOG = path.join(D, 'orcacast.log');
-const log = (...a) => { try { fs.mkdirSync(D, { recursive: true }); fs.appendFileSync(LOG, new Date().toISOString() + ' ' + a.map(x => (x && x.stack) || x).join(' ') + '\n'); } catch {} };
+const log = (...a) => { try { fs.mkdirSync(D, { recursive: true }); fs.appendFileSync(LOG, new Date().toISOString() + ' ' + a.map(x => (x && x.stack) || x).join(' ') + '\n'); } catch { } };
 process.on('uncaughtException', e => log('uncaught', e));
 process.on('unhandledRejection', e => log('rejection', e));
 const defaults = {
@@ -39,7 +39,7 @@ function osd(icon, text, ms) { // on-screen display, drawn above any app
   try {
     const [w] = win.getContentSize(); ov.setBounds({ x: 0, y: 0, width: w, height: 150 }); ov.setVisible(true);
     ov.webContents.send('osd', { icon, text, ms }); clearTimeout(ovT);
-    ovT = setTimeout(() => { try { ov.setVisible(false); } catch {} }, ms || 2100);
+    ovT = setTimeout(() => { try { ov.setVisible(false); } catch { } }, ms || 2100);
   } catch (e) { log('osd', e); }
 }
 const toast = t => osd('', t);
@@ -50,17 +50,28 @@ function ips() {
   const r = a => a.startsWith('192.168.') ? 0 : a.startsWith('10.') ? 1 : 2;
   return out.length ? out.sort((a, b) => r(a) - r(b)) : ['localhost'];
 }
-const push = () => send('cfg', { apps: cfg.apps, theme: cfg.theme || 0, ytShadow: cfg.ytShadow !== false, login: app.getLoginItemSettings().openAtLogin,
-  wall: fs.existsSync(WP) ? pathToFileURL(WP).href + '?' + Date.now() : cfg.wallUrl || null });
+const push = () => send('cfg', {
+  apps: cfg.apps, theme: cfg.theme || 0, ytShadow: cfg.ytShadow !== false, login: app.getLoginItemSettings().openAtLogin,
+  wall: fs.existsSync(WP) ? pathToFileURL(WP).href + '?' + Date.now() : cfg.wallUrl || null
+});
 async function pushPair() {
   const urls = [...ips(), os.hostname() + '.local'].map(a => `http://${a}:${port}`);
-  send('pair', { urls, pin: cfg.pin, qr: await QR.toDataURL(`${urls[0]}/?pin=${cfg.pin}`, { margin: 1, width: 240 }) });
+  const qrUrl = urls[1] || urls[0];
+  send('pair', { urls, pin: cfg.pin, qr: await QR.toDataURL(`${qrUrl}/?pin=${cfg.pin}`, { margin: 1, width: 240 }) });
 }
 const norm = u => /^(https?|orcacast):/i.test(u) ? u : 'https://' + u;
 function addApp(d) {
   if (!d || !d.name || !d.url) return;
   cfg.apps.push({ name: String(d.name).slice(0, 30), url: norm(String(d.url).trim()), thumb: d.thumb || undefined });
   save(); push(); osd('＋', 'Added ' + d.name);
+}
+function updateApp(i, d) {
+  if (!Number.isInteger(i) || i < 0 || i >= cfg.apps.length || !d || !String(d.name || '').trim() || !String(d.url || '').trim()) return;
+  const app = cfg.apps[i];
+  app.name = String(d.name).trim().slice(0, 30);
+  app.url = norm(String(d.url).trim());
+  app.thumb = String(d.thumb || '').trim() || undefined;
+  save(); push(); osd('✎', 'Updated ' + app.name);
 }
 
 // ---------- app browser ----------
@@ -90,14 +101,14 @@ function launch0(url) {
   const local = /^orcacast:\/\/(radio|tv)$/.exec(url);
   view = new WebContentsView({ webPreferences: { partition: 'persist:apps', backgroundThrottling: false, spellcheck: false, ...(local ? { webSecurity: false } : {}) } });
   view.appUrl = url; viewHidden = false; viewEdit = false;
-  let host = url; try { host = new URL(url).hostname.replace(/^www\./, ''); } catch {}
+  let host = url; try { host = new URL(url).hostname.replace(/^www\./, ''); } catch { }
   view.appName = (cfg.apps.find(a => a.url === url) || {}).name || host;
   const wc = view.webContents, yt = YT.test(url);
   wc.setUserAgent(yt ? UA_TV : wc.getUserAgent().replace(/ Electron\/\S+/, '').replace(/ orcacast-tv\/\S+/, ''));
   wc.setWindowOpenHandler(({ url }) => { wc.loadURL(url); return { action: 'deny' }; });
   hook(wc);
   wc.on('console-message', (e, l, msg) => { const m = typeof msg === 'string' ? msg : (e && e.message) || ''; if (m.startsWith('__TVEDIT__')) viewEdit = m.endsWith('1'); });
-  wc.on('dom-ready', () => { try { wc.executeJavaScript(CURSOR_JS + ';' + EDIT_JS + (YT.test(wc.getURL()) ? ';' + YT_JS + (cfg.ytShadow === false ? '' : ';' + YT_FIX_JS) : '')).catch(() => {}); } catch {} });
+  wc.on('dom-ready', () => { try { wc.executeJavaScript(CURSOR_JS + ';' + EDIT_JS + (YT.test(wc.getURL()) ? ';' + YT_JS + (cfg.ytShadow === false ? '' : ';' + YT_FIX_JS) : '')).catch(() => { }); } catch { } });
   wc.on('render-process-gone', (e, d) => { log('app renderer gone', d && d.reason); if (view && view.webContents === wc) { closeApp(); toast('The app stopped responding – back to home'); } });
   try { win.contentView.addChildView(view, 0); } catch { win.contentView.addChildView(view); } // index 0 keeps the OSD layer on top
   layout(); if (local) wc.loadFile(path.join(__dirname, 'player.html'), { query: { mode: local[1] } }); else wc.loadURL(yt ? ytUrl(url) : url); wc.focus(); sendApp();
@@ -106,7 +117,7 @@ function closeApp(quiet) {
   if (!view) return;
   const v = view, wc = v.webContents; view = null; viewHidden = false; viewEdit = false;
   try { win.contentView.removeChildView(v); } catch (e) { log('remove', e); }
-  try { wc.removeAllListeners('before-input-event'); wc.removeAllListeners('console-message'); wc.removeAllListeners('dom-ready'); wc.setAudioMuted(true); wc.stop(); } catch {}
+  try { wc.removeAllListeners('before-input-event'); wc.removeAllListeners('console-message'); wc.removeAllListeners('dom-ready'); wc.setAudioMuted(true); wc.stop(); } catch { }
   setTimeout(() => { try { if (!wc.isDestroyed()) wc.close(); } catch (e) { log('close', e.message); } }, 200); // never destroy inside an input/IPC callback
   if (!quiet) { win.webContents.focus(); sendApp(); }
 }
@@ -141,7 +152,7 @@ function setPower(v) { off = v; if (v) closeApp(); send('power', v); }
 function back(wc) {
   if (/^file:/.test(wc.getURL())) return wc.executeJavaScript('window.__back?window.__back():0').then(r => { if (!r) closeApp(); }).catch(() => closeApp());
   if (/youtube\.com\/tv/.test(wc.getURL())) return press(wc, 'Escape');
-  wc.executeJavaScript('document.fullscreenElement?(document.exitFullscreen(),1):0').then(r => { if (!r) wc.navigationHistory.canGoBack() ? wc.navigationHistory.goBack() : closeApp(); }).catch(() => {});
+  wc.executeJavaScript('document.fullscreenElement?(document.exitFullscreen(),1):0').then(r => { if (!r) wc.navigationHistory.canGoBack() ? wc.navigationHistory.goBack() : closeApp(); }).catch(() => { });
 }
 const MI = { play: ['▶', 'Play'], pause: ['⏸', 'Pause'], stop: ['⏹', 'Stopped'], rew: ['⏪', 'Rewind 10s'], fwd: ['⏩', 'Forward 10s'] };
 function media(a) {
@@ -150,7 +161,7 @@ function media(a) {
   osd(...MI[a]);
   if ((a === 'rew' || a === 'fwd') && arrows) return press(wc, a === 'rew' ? 'Left' : 'Right');
   wc.executeJavaScript(`(()=>{const v=[...document.querySelectorAll('video,audio')].sort((x,y)=>(y.duration||0)-(x.duration||0))[0];if(!v)return 0;const a='${a}';if(a==='play')v.play();else if(a==='pause')v.pause();else if(a==='stop'){v.pause();v.currentTime=0}else v.currentTime=Math.max(0,v.currentTime+(a==='fwd'?10:-10));return 1})()`)
-    .then(r => { if (!r && (a === 'play' || a === 'pause')) press(wc, 'Space', ' '); }).catch(() => {});
+    .then(r => { if (!r && (a === 'play' || a === 'pause')) press(wc, 'Space', ' '); }).catch(() => { });
 }
 function listen() { // desktop microphone -> Windows speech recognition (offline, no API key)
   if (listening) return; listening = true; osd('🎙', 'Listening…', 9500);
@@ -206,7 +217,7 @@ const srv = http.createServer((q, r) => {
   if (q.method === 'POST' && q.url.startsWith('/cmd')) { // HTTP fallback if WebSocket is blocked
     if (pin !== cfg.pin) { r.writeHead(403); return r.end(); }
     const c = []; q.on('data', d => c.push(d));
-    q.on('end', () => { try { handle(JSON.parse(Buffer.concat(c))); } catch {} r.end('ok'); });
+    q.on('end', () => { try { handle(JSON.parse(Buffer.concat(c))); } catch { } r.end('ok'); });
     return;
   }
   if (q.method === 'POST' && q.url.startsWith('/wallpaper')) {
@@ -228,7 +239,7 @@ wss.on('connection', (ws, q) => {
 setInterval(() => wss.clients.forEach(c => { if (c.dead) return c.terminate(); c.dead = true; c.ping(); }), 15000);
 function listenPort(p) {
   srv.once('error', e => { if (e.code === 'EADDRINUSE' && p < 8799) listenPort(p + 1); });
-  srv.listen(p, '0.0.0.0', () => { port = p; pushPair(); if (Bonjour) try { new Bonjour().publish({ name: 'OrcaCast TV', type: 'orcacast', port: p }); } catch {} });
+  srv.listen(p, '0.0.0.0', () => { port = p; pushPair(); if (Bonjour) try { new Bonjour().publish({ name: 'OrcaCast TV', type: 'orcacast', port: p }); } catch { } });
 }
 function fixFw() { // elevated: removes Windows' auto-created BLOCK rules and opens the port
   const bat = path.join(D, 'fix-firewall.bat'), exe = process.execPath;
@@ -241,7 +252,15 @@ function fwCheck() { cp.exec('netsh advfirewall firewall show rule name="OrcaCas
 ipcMain.on('launch', (e, url) => launch(url));
 ipcMain.on('resume', () => showApp());
 ipcMain.on('addapp', (e, d) => addApp(d));
+ipcMain.on('updateapp', (e, i, d) => updateApp(i, d));
 ipcMain.on('rmapp', (e, i) => { cfg.apps.splice(i, 1); save(); push(); });
+ipcMain.on('moveapp', (e, i, direction) => {
+  if (!Number.isInteger(i) || (direction !== -1 && direction !== 1) || i < 0 || i >= cfg.apps.length) return;
+  const target = i + direction;
+  if (target < 0 || target >= cfg.apps.length) return;
+  [cfg.apps[i], cfg.apps[target]] = [cfg.apps[target], cfg.apps[i]];
+  save(); push();
+});
 ipcMain.on('theme', (e, i) => { fs.rmSync(WP, { force: true }); delete cfg.wallUrl; cfg.theme = i; save(); push(); });
 ipcMain.on('randwall', () => { fs.rmSync(WP, { force: true }); cfg.wallUrl = `https://picsum.photos/seed/${Date.now()}/1920/1080`; save(); push(); });
 ipcMain.on('wallurl', (e, u) => { fs.rmSync(WP, { force: true }); cfg.wallUrl = u ? norm(u) : undefined; save(); push(); });
@@ -264,7 +283,7 @@ app.whenReady().then(async () => {
   win.once('ready-to-show', () => win.show()); win.on('resize', layout); win.loadFile('index.html'); hook(win.webContents);
   ov = new WebContentsView({ webPreferences: { nodeIntegration: true, contextIsolation: false } });
   ov.setBackgroundColor('#00000000'); ov.webContents.loadFile('osd.html'); win.contentView.addChildView(ov); ov.setBounds({ x: 0, y: 0, width: 1280, height: 150 }); ov.setVisible(false);
-  win.webContents.on('render-process-gone', (e, d) => { log('home renderer gone', d && d.reason); setTimeout(() => { try { win.reload(); } catch {} }, 500); });
+  win.webContents.on('render-process-gone', (e, d) => { log('home renderer gone', d && d.reason); setTimeout(() => { try { win.reload(); } catch { } }, 500); });
   app.on('child-process-gone', (e, d) => log('child gone', d.type, d.reason));
   const s = session.fromPartition('persist:apps'); // extensions: unpacked folders in <userData>/extensions
   fs.mkdirSync(EXT, { recursive: true });
