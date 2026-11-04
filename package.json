@@ -1,7 +1,7 @@
 {
   "name": "orcacast-tv",
   "productName": "OrcaCast TV",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "OrcaCast TV - TV-style launcher with phone remote",
   "main": "main.js",
   "scripts": { "start": "electron .", "dist": "electron-builder --win nsis portable" },
