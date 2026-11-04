@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-MIT-5ee0a0)](LICENSE)
 [![Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=data:image%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEgNC4yIDEwIDN2OEgxem0xMC0xLjQgMTItMS43VjExSDExek0xIDEyaDl2OEwxIDE4Ljh6bTEwIDBoMTJ2MTAuOUwxMSAyMXoiLz48L3N2Zz4%3D)](#requirements)
 [![made](https://img.shields.io/badge/made%20using-Claude%20Code-D77757?logo=claude&logoColor=white)](#requirements)
-![Hits](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2Fsoorzj%2FOrcaCast-TV.json&style=rounded-square&label=hits)
+![Hits](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2Fsoorzj%2FOrcaCast-TV.json&style=rounded-square&color=D0D70C&label=hits)
 
   <img alt="Electron" src="https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white" />  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" />  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />  <img alt="HTML5" src="https://img.shields.io/badge/HTML5_Electron-E34F26?style=for-the-badge&logo=html5&logoColor=white" />  <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />  <img alt="hls.js" src="https://img.shields.io/badge/hls.js-FF6B35?style=for-the-badge" />
         
