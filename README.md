@@ -2,7 +2,7 @@
 
 ***
 
-[![Release](https://img.shields.io/badge/latest%20release-1.3.0%20beta-4f8cff)](../../releases)
+[![Release](https://img.shields.io/badge/latest%20release-1.4.0%20R-4f8cff)](../../releases)
 [![Last](https://img.shields.io/badge/last%20updated-4%20November%202026-ff00c3)](../../releases)
 [![License](https://img.shields.io/badge/license-MIT-5ee0a0)](LICENSE)
 [![Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=data:image%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEgNC4yIDEwIDN2OEgxem0xMC0xLjQgMTItMS43VjExSDExek0xIDEyaDl2OEwxIDE4Ljh6bTEwIDBoMTJ2MTAuOUwxMSAyMXoiLz48L3N2Zz4%3D)](#requirements)
@@ -15,8 +15,9 @@
 Ever owned a extra monitor or a LED TV which you want to set up as a TV in your room? Ever ordered a TV or a 4k projector and realised it doesnt come with any software? Then OrcaCast is just for you. OrcaCast TV is open source TV Software simulations whic turns a Windows PC connected to a TV into a simple, remote-controlled entertainment hub. Launch web apps from a 10-foot interface, control them with a keyboard or phone, and keep the PC hidden behind a TV-friendly home screen. OrcaCast TV is currently distributed as a open-source Windows desktop application. The project is under active development and has many bugs and certain features do not work and the interface may change between releases.
 
 # Latest Release
-### Latest Release 1.3.0 here: <br><br>
-[<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/20ff8565-33a1-47e1-ba23-e69b06b30005" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.3.0-beta)
+### Latest Release 1.4.0 here: <br><br>
+[<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/a9650daa-b60f-43ef-a394-0a1e1e8b4376" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.4.0)
+
 <br>
 
 ### [See all releases](#all-releases)
@@ -295,8 +296,30 @@ The MIT License applies to this repository's original source code. Electron,
 third-party extensions remain subject to their own licenses and terms.
 
 # All Releases
+### Latest Release 1.4.0 here: <br><br>
+[<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/a9650daa-b60f-43ef-a394-0a1e1e8b4376" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.4.0)
+<br>
+> #### Changelog
+  - Added editing support for existing TV apps from **Settings > Apps**.
+    - Existing app name can be edited.
+    - Existing app website link can be edited.
+    - Existing app thumbnail URL can be edited.
+    - Added **Save changes** and **Cancel edit** actions.
+  - Added app ordering controls:
+    - **Move up**
+    - **Move down**
+  - Added client-side edit state and form population for the selected app.
+  - Changed QR-code selection for phone pairing:
+    - Previously, the QR code always encoded `urls[0]`.
+    - Now it encodes `urls[1]` when available, which selects the second
+      displayed network address (the intended `10.x.x.x` address).
+    - Falls back to `urls[0]` if a second address is unavailable.
+  - Added `updateApp(i, d)` to update an existing app's:
+    - Name, limited to 30 characters.
+    - URL, normalized through the existing URL normalization helper.
+    - Thumbnail URL, with an empty value removing the thumbnail.
 
-### Latest Release 1.3.0 here: <br><br>
+### Release 1.3.0 here: <br><br>
 [<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/20ff8565-33a1-47e1-ba23-e69b06b30005" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.3.0-beta)
 <br>
 > #### Changelog
