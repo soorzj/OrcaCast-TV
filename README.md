@@ -17,40 +17,9 @@ Ever owned a extra monitor or a LED TV which you want to set up as a TV in your 
 # Latest Release
 ### Latest Release 1.3.0 here: <br><br>
 [<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/20ff8565-33a1-47e1-ba23-e69b06b30005" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.3.0-beta)
-<br><br>
-
-> #### Changelog
-> * Added Online Radio Station Player
-> * Added Online TV Stream Player
-
 <br>
 
-> #### Issues
-> * Some Text in YouTube at certain areas still have a absurd black background. Others have been fixed.
-> * The Remote on mobile is still not working, despite giving firewall permissions.
-
-
-# Older Releases
-### Release 1.2.0 here: <br><br>
-[<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/b884c688-c1c9-4ec0-83bd-5b51d03102f2" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.2.0-beta)
-> #### Changelog
-> * Initial Release after development and testing on local machine
-> * Added Youtube for TV to spoof TizenOS
-> * Added other apps like Spotify, Amazon Prime, Netflix and Twitch
-> * Added ability to change wallpapers
-> * Added Liquid animations
-> * Added keybinds and global listeners
-> * Added ability to add chromium unpacked extensions
-
-<br>
-
-> #### Issues
-> * Youtube App exiitng at times cuases crashes
-> * Text in YouTube at certain areas have a absurd black background
-> * Exiting to home screen while keeping an app open and returning to it crashed the app
-> * The Remote on mobile is not working, despite giving firewall permissions.
-
-<br><br><br><br>
+### [See all releases](#all-releases)
 
 # About OrcaCast TV
 
@@ -324,3 +293,38 @@ OrcaCast TV is available under the [MIT License](LICENSE).
 The MIT License applies to this repository's original source code. Electron,
 `bonjour-service`, `qrcode`, `ws`, websites launched by the app, and any
 third-party extensions remain subject to their own licenses and terms.
+
+# All Releases
+
+### Latest Release 1.3.0 here: <br><br>
+[<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/20ff8565-33a1-47e1-ba23-e69b06b30005" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.3.0-beta)
+<br>
+> #### Changelog
+> * Added Online Radio Station Player
+> * Added Online TV Stream Player
+ <br>
+
+> #### Issues
+> * Some Text in YouTube at certain areas still have a absurd black background. Others have been fixed.
+> * The Remote on mobile is still not working, despite giving firewall permissions.
+
+### Release 1.2.0 here: <br><br>
+[<img width="400" height="45" alt="image" src="https://github.com/user-attachments/assets/b884c688-c1c9-4ec0-83bd-5b51d03102f2" />](https://github.com/soorzj/OrcaCast-TV/releases/tag/1.2.0-beta)
+> #### Changelog
+> * Initial Release after development and testing on local machine
+> * Added Youtube for TV to spoof TizenOS
+> * Added other apps like Spotify, Amazon Prime, Netflix and Twitch
+> * Added ability to change wallpapers
+> * Added Liquid animations
+> * Added keybinds and global listeners
+> * Added ability to add chromium unpacked extensions
+<br>
+
+> #### Issues
+> * Youtube App exiitng at times cuases crashes
+> * Text in YouTube at certain areas have a absurd black background
+> * Exiting to home screen while keeping an app open and returning to it crashed the app
+> * The Remote on mobile is not working, despite giving firewall permissions.
+
+
+
